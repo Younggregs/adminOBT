@@ -7,7 +7,7 @@ export const URL = process.env.API_URL;
  */
 
 const API_ROOT_URL =
-	'http://159.65.201.173:8000/api';
+	'http://159.65.201.173/api';
 const AUTH_URL = `${API_ROOT_URL}/auth/`;
 const LOGIN_URL = `${API_ROOT_URL}/login/`;
 
@@ -51,7 +51,7 @@ const MISS_URL = `${API_ROOT_URL}/record_miss/`;
 const DELETE_MISS_URL = `${API_ROOT_URL}/delete_miss/`;
 
 const IMG_PATH_URL = 'http://159.65.201.173:8000';
-const ROOT_PATH_URL = 'http://159.65.201.173/:3000';
+const ROOT_PATH_URL = 'http://obuntu.community';
 
 /*
     Other routes
