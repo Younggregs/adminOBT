@@ -33,6 +33,7 @@ export default function Login() {
 
     const submit = async () => {
 
+        setLoading(true)
         const message = await login(phone, password)
         if(message.code){
             setFlowershower(true)
@@ -47,8 +48,10 @@ export default function Login() {
             setErr(true)
             setError('Sorry something broke, could not complete the process')
         }
+
+        setLoading(false)
   
-      }
+    }
 
     return (
         <div className="auth-background">
