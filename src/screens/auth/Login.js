@@ -56,7 +56,6 @@ export default function Login() {
     return (
         <div className="auth-background">
             <div className="auth-container">
-                <img src={MainLogo} width="160px" height="74px" alt="Logo" />
                 <h1>Obuntu</h1><br /><br />
                 <h3>Welcome to Admin Space</h3>
                 <p>Proceed with login</p>

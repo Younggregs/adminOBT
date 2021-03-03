@@ -6,8 +6,8 @@ import Button from '@material-ui/core/Button'
 import newAdmin from '../../promises/NewAdmin'
 import adminList from '../../promises/AdminList'
 import lgaList from '../../promises/LgaList'
-import toList from '../../promises/ToList'
-import vehicleList from '../../promises/VehicleList'
+import wardList from '../../promises/WardList'
+import pollingUnitList from '../../promises/PollingUnitList'
 import InnerNavbar from '../../partials/InnerNavbar'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -74,14 +74,15 @@ export default function Admin(props) {
     const [list, setList] = useState([]);
     const [check, setCheck] = useState(true)
     const [open, setOpen] = React.useState(false);
-    const [guide, setGuide] = React.useState();
-    const [ttc, setTtc] = React.useState();
-    const [ttt, setTtt] = React.useState();
-    const [vehicle, setVehicle] = useState([]);
-    const [vehicles, setVehicles] = useState([]);
-    const [from, setFrom] = React.useState();
-    const [to, setTo] = React.useState();
-    const [fromA, setFromA] = React.useState([])
+    const [wards, setWards] = React.useState([]);
+    const [pollingUnits, setPollingUnits] = React.useState([]);
+    const [ward, setWard] = React.useState();
+    const [pollingUnit, setPollingUnit] = useState([]);
+    const [email, setEmail] = useState();
+    const [gender, setGender] = React.useState();
+    const [hasVotersCard, setHasVotersCard] = React.useState();
+    const [loadward, setLoadward] = React.useState(false)
+    const [loadpolls, setLoadpolls] = React.useState(false)
     const [lgas, setLgas] = React.useState([])
     const [lga, setLga] = React.useState()
     const [toB, setToB] = React.useState([])
@@ -92,6 +93,7 @@ export default function Admin(props) {
     const onPhoneChanged = e => setPhone(e.target.value)
     const onPasswordChanged = e => setPassword(e.target.value)
     const onNameChanged = e => setName(e.target.value)
+    const onEmailChanged = e => setEmail(e.target.value)
 
     const _handleKeyDownSubmit = (e) => {
       if (e.key === 'Enter') {
@@ -100,8 +102,35 @@ export default function Admin(props) {
     } 
 
 
-    const handleChangeLga = (event) => {
+    const handleChangeLga = async (event) => {
         setLga(event.target.value);
+
+        setLoadward(true)
+        const res = await wardList(event.target.value)
+        setWards(res)
+        setLoadward(false)
+    };
+
+    const handleChangeWard = async (event) => {
+      setWard(event.target.value);
+
+      setLoadpolls(true)
+      const res = await pollingUnitList(event.target.value)
+      setPollingUnits(res)
+      setLoadpolls(false)
+
+    };
+
+    const handleChangePollingUnit = async (event) => {
+      setPollingUnit(event.target.value);
+    };
+
+    const handleChangeGender = async (event) => {
+      setGender(event.target.value);
+    };
+
+    const handleChangeVotersCard = async (event) => {
+      setHasVotersCard(event.target.value);
     };
     
     const handleClickOpen = () => {
@@ -144,7 +173,7 @@ export default function Admin(props) {
   
      setError('')
      setList([])
-     const res = await newAdmin(name, phone, password, lga)
+     const res = await newAdmin(name, phone, password, lga, ward, pollingUnit, gender, email, hasVotersCard)
      if(res){
         if(res.error_message){
           setError(res.error_message)
@@ -180,21 +209,70 @@ export default function Admin(props) {
             </DialogContentText>
 
             <Grid className={classes.formField}>
-            <FormControl className={classes.formControl}>
-                <InputLabel id="from">LGA</InputLabel>
+              {lgas.length <= '0' ? (
+                <p>Fetching LGAs... </p>
+              ) : (
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="from">LGA</InputLabel>
+                  <Select
+                    labelId="lga"
+                    id="lga"
+                    style={{minWidth: 300}}
+                    required
+                    value={lga}
+                    onChange={handleChangeLga}
+                  >
+                  {lgas.map(item =>
+                    <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                  )}
+                  </Select>
+              </FormControl>
+              )}
+            </Grid>
+
+            <Grid className={classes.formField}>
+              {loadward ? (
+                <p>Fetching wards... </p>
+              ) : (
+                <FormControl className={classes.formControl}>
+                <InputLabel id="from">Ward</InputLabel>
                 <Select
-                  labelId="lga"
-                  id="lga"
+                  labelId="ward"
+                  id="ward"
                   style={{minWidth: 300}}
                   required
-                  value={lga}
-                  onChange={handleChangeLga}
+                  value={ward}
+                  onChange={handleChangeWard}
                 >
-                {lgas.map(item =>
+                {wards.map(item =>
                   <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
                 )}
                 </Select>
             </FormControl>
+              )}
+            
+            </Grid>
+
+            <Grid className={classes.formField}>
+              {loadpolls ? (
+                  <p>Fetching Polling Units... </p>
+                ) : (
+                  <FormControl className={classes.formControl}>
+                    <InputLabel id="from">Polling Units</InputLabel>
+                    <Select
+                      labelId="pollingUnit"
+                      id="pollingUnit"
+                      style={{minWidth: 300}}
+                      required
+                      value={pollingUnit}
+                      onChange={handleChangePollingUnit}
+                    >
+                    {pollingUnits.map(item =>
+                      <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                    )}
+                    </Select>
+                </FormControl>
+                )}
             </Grid>
 
             <Grid className={classes.formField}>  
@@ -208,7 +286,48 @@ export default function Admin(props) {
 
             <Grid className={classes.formField}>  
                 <TextField 
-                autoFocus 
+                  id="email" 
+                  label="Email" 
+                  onChange={onEmailChanged}
+                  required fullWidth/>
+            </Grid>
+
+            <Grid className={classes.formField}>
+            <FormControl className={classes.formControl}>
+                <InputLabel id="from">Gender</InputLabel>
+                <Select
+                  labelId="gender"
+                  id="gender"
+                  style={{minWidth: 300}}
+                  required
+                  value={gender}
+                  onChange={handleChangeGender}
+                >
+                  <MenuItem key='1' value='Male'>Male</MenuItem>
+                  <MenuItem key='2' value='Female'>Female</MenuItem>
+                </Select>
+            </FormControl>
+            </Grid>
+
+            <Grid className={classes.formField}>
+            <FormControl className={classes.formControl}>
+                <InputLabel id="from">Does user have a voter card?</InputLabel>
+                <Select
+                  labelId="voterCard"
+                  id="voterCard"
+                  style={{minWidth: 300}}
+                  required
+                  value={hasVotersCard}
+                  onChange={handleChangeVotersCard}
+                >
+                  <MenuItem key='1' value={1}>Yes</MenuItem>
+                  <MenuItem key='1' value={0}>No</MenuItem>
+                </Select>
+            </FormControl>
+            </Grid>
+
+            <Grid className={classes.formField}>  
+                <TextField 
                 id="phone" 
                 label="Phone" 
                 onChange={onPhoneChanged}
@@ -217,7 +336,6 @@ export default function Admin(props) {
 
             <Grid className={classes.formField}>  
                 <TextField 
-                  autoFocus 
                   id="password" 
                   label="Password" 
                   type="password"

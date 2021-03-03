@@ -7,12 +7,7 @@ const MainLogo = () => {
     return (
         <div className="nav-header">
             <Link to="/">
-            <img 
-                src={Logo} 
-                width="160px" 
-                height="74px"
-                alt="Logo" 
-            />
+                <h1>Obuntu</h1>
             </Link>
         </div>
     )

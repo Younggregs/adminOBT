@@ -17,6 +17,8 @@ const GET_NAME_URL = `${API_ROOT_URL}/guide/`;
 */
 const LGA_URL = `${API_ROOT_URL}/lgas/`;
 const ADMIN_URL = `${API_ROOT_URL}/admin/`;
+const WARD_URL = `${API_ROOT_URL}/ward/`;
+const POLLING_UNIT_URL = `${API_ROOT_URL}/pollingunits/`;
 
 /*
     User routes
@@ -50,7 +52,7 @@ const DELETE_IMAGE_URL = `${API_ROOT_URL}/delete_image/`;
 const MISS_URL = `${API_ROOT_URL}/record_miss/`;
 const DELETE_MISS_URL = `${API_ROOT_URL}/delete_miss/`;
 
-const IMG_PATH_URL = 'http://159.65.201.173:8000';
+const IMG_PATH_URL = 'http://159.65.201.173';
 const ROOT_PATH_URL = 'http://obuntu.community';
 
 /*
@@ -62,6 +64,8 @@ export {
     LOGIN_URL,
     LOCATION_URL,
     USER_URL,
+    WARD_URL,
+    POLLING_UNIT_URL,
     GET_NAME_URL,
     GUIDE_URL,
     ADMIN_URL,
