@@ -64,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
   },
   formField: {
     marginBottom: 20
+  },
+  titleCase: {
+    textTransform: 'capitalize'
   }
 }));
 
@@ -85,12 +88,15 @@ export default function User(props) {
     const [loadpolls, setLoadpolls] = React.useState(false)
     const [lgas, setLgas] = React.useState([])
     const [lga, setLga] = React.useState()
-    const [toB, setToB] = React.useState([])
+    const [phoneError, setPhoneError] = React.useState([])
     const [password, setPassword] = useState()
     const [phone, setPhone] = useState('')
     const [name, setName] = useState('')
 
-    const onPhoneChanged = e => setPhone(e.target.value)
+    const onPhoneChanged = (e) => {
+      setPhone(e.target.value)
+      setPhoneError(false)
+    }
     const onPasswordChanged = e => setPassword(e.target.value)
     const onNameChanged = e => setName(e.target.value)
     const onEmailChanged = e => setEmail(e.target.value)
@@ -170,21 +176,46 @@ export default function User(props) {
     
     const handleSave = async() => {
   
-     setError('')
-     setList([])
-     const res = await newUser(name, phone, password, lga, ward, pollingUnit, gender, email, hasVotersCard)
-     if(res){
-        if(res.error_message){
-          setError(res.error_message)
+    if (canSave) {
+
+      if(verifyPhone(phone)){
+
+        setError('')
+        setList([])
+        const res = await newUser(name, phone, password, lga, ward, pollingUnit, gender, email, hasVotersCard)
+        if(res){
+            if(res.error_message){
+              setError(res.error_message)
+            }else{
+              setList(res)
+              setOpen(false)
+            }
+            
         }else{
-          setList(res)
-          setOpen(false)
+          setError('Oops something broke, refresh and try again')
         }
-        
-     }else{
-      setError('Oops something broke, refresh and try again')
-     }
+
+      }else{
+        setPhoneError(true)
+      }
+
+    }else{
+      setError('All required fields must be filled')
+    }
   
+  }
+
+  const canSave = [name, phone, password, lga, ward, pollingUnit, gender, hasVotersCard].every(Boolean)
+
+  const verifyPhone = (value) => {
+      
+    let v = isNaN(value)
+    if(isNaN(value)){
+     return false
+    }
+    
+    return value.match(/\d/g).length === 11;
+
   }
 
   return (
@@ -212,7 +243,7 @@ export default function User(props) {
                 <p>Fetching LGAs... </p>
               ) : (
                 <FormControl className={classes.formControl}>
-                  <InputLabel id="from">LGA</InputLabel>
+                  <InputLabel required id="from">LGA</InputLabel>
                   <Select
                     labelId="lga"
                     id="lga"
@@ -235,7 +266,7 @@ export default function User(props) {
                 <p>Fetching wards... </p>
               ) : (
                 <FormControl className={classes.formControl}>
-                <InputLabel id="from">Ward</InputLabel>
+                <InputLabel required id="from">Ward</InputLabel>
                 <Select
                   labelId="ward"
                   id="ward"
@@ -245,7 +276,7 @@ export default function User(props) {
                   onChange={handleChangeWard}
                 >
                 {wards.map(item =>
-                  <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                  <MenuItem key={item.id} value={item.id} className={classes.titleCase}><span className={classes.titleCase}>{item.name}</span></MenuItem>
                 )}
                 </Select>
             </FormControl>
@@ -258,7 +289,7 @@ export default function User(props) {
                   <p>Fetching Polling Units... </p>
                 ) : (
                   <FormControl className={classes.formControl}>
-                    <InputLabel id="from">Polling Units</InputLabel>
+                    <InputLabel required id="from">Polling Units</InputLabel>
                     <Select
                       labelId="pollingUnit"
                       id="pollingUnit"
@@ -268,7 +299,7 @@ export default function User(props) {
                       onChange={handleChangePollingUnit}
                     >
                     {pollingUnits.map(item =>
-                      <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                      <MenuItem key={item.id} value={item.id} className={classes.titleCase}><span className={classes.titleCase}>{item.name}</span></MenuItem>
                     )}
                     </Select>
                 </FormControl>
@@ -277,7 +308,6 @@ export default function User(props) {
 
             <Grid className={classes.formField}>  
                 <TextField 
-                autoFocus 
                 id="name" 
                 label="Full Name" 
                 onChange={onNameChanged}
@@ -288,13 +318,14 @@ export default function User(props) {
                 <TextField 
                   id="email" 
                   label="Email" 
+                  helperText="Email is not required"
                   onChange={onEmailChanged}
-                  required fullWidth/>
+                  fullWidth/>
             </Grid>
 
             <Grid className={classes.formField}>
             <FormControl className={classes.formControl}>
-                <InputLabel id="from">Gender</InputLabel>
+                <InputLabel required id="from">Gender</InputLabel>
                 <Select
                   labelId="gender"
                   id="gender"
@@ -311,7 +342,7 @@ export default function User(props) {
 
             <Grid className={classes.formField}>
             <FormControl className={classes.formControl}>
-                <InputLabel id="from">Does user have a voter card?</InputLabel>
+                <InputLabel required id="from">Does user have a voter card?</InputLabel>
                 <Select
                   labelId="voterCard"
                   id="voterCard"
@@ -328,16 +359,17 @@ export default function User(props) {
 
             <Grid className={classes.formField}>  
                 <TextField 
-                autoFocus 
                 id="phone" 
                 label="Phone" 
+                placeholder="eg. 08109599597"
+                inputProps={{ maxLength: 11 }}
                 onChange={onPhoneChanged}
                 required fullWidth/>
+                <p style={{color: '#ff0000'}}>{phoneError && "Invalid Phone Number"}</p>
             </Grid>
 
             <Grid className={classes.formField}>  
-                <TextField 
-                  autoFocus 
+                <TextField  
                   id="password" 
                   label="Password" 
                   type="password"
@@ -354,7 +386,7 @@ export default function User(props) {
             <Button onClick={handleClose} color="primary">
                 Cancel
             </Button>
-            <Button onClick={() => handleSave()} color="primary">
+            <Button onClick={() => handleSave()} disabled={!canSave} color="primary">
                 Submit
             </Button>
         </DialogActions>
