@@ -19,7 +19,6 @@ export async function login(username, password) {
   
       });
       const auth = await res.json();
-      console.log('auth', auth)
       localStorage.setItem('auth', auth.token)
       getUsername(auth.token)
 

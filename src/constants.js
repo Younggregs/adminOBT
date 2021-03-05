@@ -10,6 +10,7 @@ const API_ROOT_URL =
 	'http://159.65.201.173/api';
 const AUTH_URL = `${API_ROOT_URL}/auth/`;
 const LOGIN_URL = `${API_ROOT_URL}/login/`;
+const SUPER_USER_URL = `${API_ROOT_URL}/superuser/`
 
 const GET_NAME_URL = `${API_ROOT_URL}/guide/`;
 /*
@@ -62,6 +63,7 @@ const ROOT_PATH_URL = 'http://obuntu.community';
 export {
     AUTH_URL,
     LOGIN_URL,
+    SUPER_USER_URL,
     LOCATION_URL,
     USER_URL,
     WARD_URL,

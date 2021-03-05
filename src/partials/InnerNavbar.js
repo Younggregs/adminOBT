@@ -1,10 +1,25 @@
-import React from 'react'
+import React, {useState} from 'react'
 import '../styles/Navbar.css'
 import { Link } from 'react-router-dom'
 import MainLogo from '../components/MainLogo'
 // import CopyLink from '../components/CopyLink'
 
 const InnerNavbar = (props) => {
+
+    const [stop, setStop] = useState(true)
+    const [superUser, setSuperUser] = useState(false)
+
+    const isSuper = async () => {
+        var superUser = await localStorage.getItem('isSuperUser')
+        if(superUser == 'true'){ setSuperUser(true) }else{ setSuperUser(false)}
+        setStop(false)
+    }
+
+    if(stop){
+        isSuper()
+    } 
+    
+
     return (
         <div className="onepage-navbar-inner">
             <nav className="navbar container">
@@ -22,7 +37,8 @@ const InnerNavbar = (props) => {
                             <div className="nav-links link-inner">
                                 <div className="inner-header">
                                     <ul>
-                                        <li className="col-md-4">
+                                        {superUser && (
+                                            <li className="col-md-4">
                                             <Link 
                                                 className={props.guide ? ("active") : ("")} 
                                                 to='/admin'
@@ -31,6 +47,7 @@ const InnerNavbar = (props) => {
                                                 Admins
                                             </Link>
                                         </li>
+                                        )}
                                         <li className="col-md-4">
                                             <Link 
                                                 className={props.user ? ("active") : ("")} 
