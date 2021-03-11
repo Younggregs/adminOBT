@@ -226,7 +226,7 @@ export default function Admin(props) {
   return (
     <div>
       <div style={{ margin: 0, marginBottom: 200}}>
-        <InnerNavbar guide={true}/> 
+        <InnerNavbar admin={true}/> 
       </div>
         <Box>
             <h3 style={{color: 'gray', textAlign: 'center', margin: 10}}>Manage Admins</h3>

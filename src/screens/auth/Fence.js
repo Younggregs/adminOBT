@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import { Redirect } from 'react-router-dom'
 import Admin from '../admin/Admin'
 import User from '../admin/User'
-import Grid from '@material-ui/core/Grid'
 import Login from '../auth/Login'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import isSuperUser from '../../promises/IsSuperUser'
@@ -19,7 +18,7 @@ function Fence(){
     if(auth == null || auth == '' || auth == false){setStatus(false)}
 
     const superUser = await isSuperUser()
-    if(superUser == true){
+    if(superUser === true){
       setIamSuperUser(true)
     }
 

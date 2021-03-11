@@ -1,21 +1,19 @@
 import React, {useState} from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import '../../styles/Auth.css'
-import MainLogo from '../../assets/imgs/MainLogo.png'
 import Button from '../../components/Button'
 import login from '../../promises/Login'
 import signin from '../../store'
+import isSuperUser from '../../promises/IsSuperUser'
 
 export default function Login() {
     const [loading, setLoading] = useState(false)
     const [password, setPassword] = useState()
     const [phone, setPhone] = useState('')
-    const [showpassword, setShowpassword] = useState()
     const [flowershower, setFlowershower] = useState(false)
     const [success, setSuccess] = useState(false)
     const [err, setErr] = useState(false)
     const [error, setError] = useState('')
-    const [email, setEmail] = useState(false)
     
 
     const onPhoneChanged = e => setPhone(e.target.value)
@@ -39,7 +37,9 @@ export default function Login() {
             setFlowershower(true)
             const res = await signin(phone, password)
             if(res){
-              setSuccess(true)
+                //set super use status
+                const superUser = await isSuperUser()
+                setSuccess(true)
             } 
         }else if(message.error_message){
             setErr(true)
@@ -91,7 +91,7 @@ export default function Login() {
 
             <div>
             {success ? (
-                <Redirect to={'/admin'} />
+                <Redirect to={'/user'} />
             ) : (
               <div />
             )}

@@ -40,7 +40,7 @@ const InnerNavbar = (props) => {
                                         {superUser && (
                                             <li className="col-md-4">
                                             <Link 
-                                                className={props.guide ? ("active") : ("")} 
+                                                className={props.admin ? ("active") : ("")} 
                                                 to='/admin'
                                                 style={{textDecoration: 'none'}}
                                             >
