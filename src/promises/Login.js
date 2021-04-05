@@ -1,11 +1,11 @@
 import { LOGIN_URL }  from '../constants'
 
-async function login(phone, password){
+async function login(email, password){
 
     var formData = new FormData()
-    formData.append('phone', phone)
+    formData.append('email', email)
     formData.append('password', password)
-    formData.append('name', 'admin')
+    formData.append('name', 'name')
 
     try {
         const res = await fetch(LOGIN_URL, {

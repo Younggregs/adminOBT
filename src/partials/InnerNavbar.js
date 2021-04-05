@@ -2,7 +2,10 @@ import React, {useState} from 'react'
 import '../styles/Navbar.css'
 import { Link } from 'react-router-dom'
 import MainLogo from '../components/MainLogo'
-// import CopyLink from '../components/CopyLink'
+import { ReactComponent as NavLogOut } from '../assets/svg/NavLogOut.svg';
+import { ReactComponent as NavDirectory } from '../assets/svg/NavDirectory.svg';
+import { ReactComponent as Settings } from '../assets/svg/Settings.svg';
+import { ReactComponent as ArrowRight } from '../assets/svg/ArrowRight.svg';
 
 const InnerNavbar = (props) => {
 
@@ -11,7 +14,7 @@ const InnerNavbar = (props) => {
 
     const isSuper = async () => {
         var superUser = await localStorage.getItem('isSuperUser')
-        if(superUser == 'true'){ setSuperUser(true) }else{ setSuperUser(false)}
+        if(superUser === 'true'){ setSuperUser(true) }else{ setSuperUser(false)}
         setStop(false)
     }
 
@@ -28,9 +31,13 @@ const InnerNavbar = (props) => {
                     <div className="logo-btn">
                         <MainLogo />
                         <div className="mobile-navbar">
-                            <Link to='/logout'>
-                                <b>Log out</b>
-                            </Link>
+                            <div className="list-drop" tabIndex="0">
+                                <Settings color={'#000'} style={{color: '#000'}}/>
+                                <div className="popout-drop">
+                                    <a href="/my_analytics"> <NavDirectory className="mr-3" />My Report Analytics<ArrowRight className="icon-right" /> </a>
+                                    <a href="/logout"> <NavLogOut className="mr-3" />Log out<ArrowRight className="icon-right" /> </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                         <div className="flip-header">
@@ -38,17 +45,7 @@ const InnerNavbar = (props) => {
                                 <div className="inner-header">
                                     <ul>
                                         {superUser && (
-                                            <li className="col-md-4">
-                                            <Link 
-                                                className={props.admin ? ("active") : ("")} 
-                                                to='/admin'
-                                                style={{textDecoration: 'none'}}
-                                            >
-                                                Admins
-                                            </Link>
-                                        </li>
-                                        )}
-                                        <li className="col-md-4">
+                                            <li className="col-md-3">
                                             <Link 
                                                 className={props.user ? ("active") : ("")} 
                                                 to='/user'
@@ -57,23 +54,49 @@ const InnerNavbar = (props) => {
                                                 Users
                                             </Link>
                                         </li>
-                                        <li className="col-md-4">
+                                        )}
+                                        <li className={superUser ? ("col-md-3") : ("col-md-12")}>
                                             <Link 
-                                                className={props.location ? ("active") : ("")} 
-                                                to='/location'
+                                                className={props.report ? ("active") : ("")} 
+                                                to='/report'
                                                 style={{textDecoration: 'none'}}
                                             >
-                                                Location
+                                                Reports
                                             </Link>
                                         </li>
+                                        {superUser && (
+                                        <li className="col-md-3">
+                                            <Link 
+                                                className={props.manager ? ("active") : ("")} 
+                                                to='/manager'
+                                                style={{textDecoration: 'none'}}
+                                            >
+                                                Manager
+                                            </Link>
+                                        </li>
+                                        )}
+                                        {superUser && (
+                                        <li className="col-md-3">
+                                            <Link 
+                                                className={props.analytics ? ("active") : ("")} 
+                                                to='/analytics'
+                                                style={{textDecoration: 'none'}}
+                                            >
+                                                Analytics
+                                            </Link>
+                                        </li>
+                                        )}
                                     </ul>
                                 </div>
                                 <ul>
                                     <li>
-                                        <Link 
-                                            to='/logout'>
-                                            <b>Logout</b>
-                                        </Link>
+                                        <div className="list-drop" tabIndex="0">
+                                            <Settings color={'#000'} style={{color: '#000'}}/>
+                                            <div className="popout-drop">
+                                                <a href="/my_analytics"> <NavDirectory className="mr-3" />My Report Analytics<ArrowRight className="icon-right" /> </a>
+                                                <a href="/logout"> <NavLogOut className="mr-3" />Log out<ArrowRight className="icon-right" /> </a>
+                                            </div>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>

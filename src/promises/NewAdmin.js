@@ -16,11 +16,11 @@ async function newAdmin(name, phone, password, lga, ward, pollingUnit, gender, e
 
       try {
         const res = await fetch(ADMIN_URL, {
-            method: 'POST',
-            body : formData,
-            headers : {
-              'Authorization' : 'Token ' + auth,
-            },
+          method: 'POST',
+          body : formData,
+          headers : {
+            'Authorization' : 'Token ' + auth,
+          },
         })
         const message = await res.json();
         return message

@@ -9,9 +9,9 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
+import Paper from '@material-ui/core/Paper';
 import { ReactComponent as Pen } from '../assets/svg/Pen.svg';
 import { ReactComponent as Bin } from '../assets/svg/Bin.svg';
-import TextField from '@material-ui/core/TextField'
 import editGuide from '../promises/EditGuide'
 import deleteGuide from '../promises/DeleteGuide'
 
@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     width: '100%',
     display: 'flex',
+    lineHeight: 0.5,
     flexDirection: 'column',
   },
   links: {
@@ -36,19 +37,18 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     minHeight: 50,
     width: 300,
+    lineHeight: 0.5,
     borderRadius: 5,
-    border: '1px solid gray',
     margin: 10,
     padding: 5,
     flexDirection: 'row',
     display: 'flex'
   },
   linkText: {
-    flex: 8,
     padding: 5, 
     fontSize: 15,
     fontWeight: 'bold',
-    color:  '#000',
+    color:  'green',
   },
   iconButton: {
     height: 35,
@@ -106,15 +106,25 @@ const useStyles = makeStyles((theme) => ({
   linkStyle: {
       padding: 5,
       fontSize: 12,
-  }
+  },
+  name: {
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    padding: 5, 
+    fontSize: 20,
+    color:  '#000',
+  },
+  text: {
+    fontWeight: 'normal',
+    padding: 5, 
+    fontSize: 15,
+    color:  '#000',
+  },
 }));
 
 export default function UserItem(props) {
   const classes = useStyles();
 
-  const [guide, setGuide] = React.useState(props.item.guide);
-  const [ttc, setTtc] = React.useState(props.item.total_travel_cost);
-  const [ttt, setTtt] = React.useState(props.item.total_travel_time);
   const [openalert, setOpenalert] = React.useState(false);
   const [openedit, setOpenedit] = React.useState(false);
   const [opendelete, setOpendelete] = React.useState(false);
@@ -158,18 +168,6 @@ export default function UserItem(props) {
     setOpendelete(false);
   };
 
-  const handleChangeGuide = (event) => {
-    setGuide(event.target.value);
-  };
-
-  const handleChangeTtc = (event) => {
-    setTtc(event.target.value);
-  };
-
-  const handleChangeTtt = (event) => {
-    setTtt(event.target.value);
-  };
-
 
 
 const handleEdit = async (id) => {
@@ -178,7 +176,7 @@ const handleEdit = async (id) => {
   setOpenalert(true)
   setAlertmsg('Submitting Guide')
 
-  const message = await editGuide(id, guide, ttc, ttt)
+  const message = await editGuide(id)
   setOpenalert(true)
   if(message.error_message){
     setAlertmsg(message.error_message)
@@ -210,12 +208,21 @@ const handleDelete = async (id) => {
 }
 
 
+const renderUser = (toggle) => {
+  var text = 'False'
+  if(toggle){
+    text = 'True'
+  }
+
+  return text
+}
+
 
 
 return (
     <div className={classes.root}>
 
-    <Grid container>
+      <Paper elevation={3} square style={{marginBottom: 10, borderBottom: '10px solid green'}}>
         {deleted ? (
             <Grid />
         ) : (
@@ -238,28 +245,6 @@ return (
                       <DialogContentText>
                           It's all about the network.
                       </DialogContentText>
-    
-                      <Grid className={classes.formField}>  
-                          <TextField 
-                            autoFocus 
-                            id="guide" 
-                            label="Guide" 
-                            multiline        
-                            rows={4}
-                            cols={100}
-                            style={{width: 300}}
-                            defaultValue={brick.guide} 
-                            onChange={handleChangeGuide} 
-                            required fullWidth/>
-                      </Grid>
-
-                      <Grid className={classes.formField}>  
-                          <TextField id="ttt" label="Total Travel Time" defaultValue={brick.total_travel_time} onChange={handleChangeTtt} required fullWidth/>
-                      </Grid>
-
-                      <Grid className={classes.formField}>  
-                          <TextField id="ttc" label="Total Travel Cost" defaultValue={brick.total_travel_cost} onChange={handleChangeTtc} required fullWidth/>
-                      </Grid>
     
                       </DialogContent>
                     <DialogActions>
@@ -296,9 +281,13 @@ return (
             <Grid className={classes.linksView}>
             <Grid className={classes.links}>
             <Grid container direction="column">
-                    <p className={classes.linkText}>Name: {props.item.name}</p>
-                    <p className={classes.linkText}>Phone: {props.item.phone}</p>
-                    <p className={classes.linkText}>LGA: {props.item.lga}</p>
+                <p className={classes.name}>{props.item.name}</p>
+                <br />
+                    <div style={{ border: '1px solid green', marginBottom: 25}} />
+                <p className={classes.linkText}>Email</p>
+                <p className={classes.text}>{props.item.email}</p>
+                <p className={classes.linkText}>Is SuperUser</p>
+                <p className={classes.text}>{renderUser(props.item.isSuperUser)}</p>
             </Grid>
             {/*
             <Grid className={classes.iconButton}>
@@ -372,7 +361,7 @@ return (
 
         
 
-    </Grid>
+    </Paper>
 
       <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={openalert} autoHideDuration={3000} onClose={handleCloseAlert}>
         <Alert onClose={handleCloseAlert} severity="success">

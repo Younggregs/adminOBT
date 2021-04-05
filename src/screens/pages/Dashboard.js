@@ -8,7 +8,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import GuideView from '../../components/GuideView'
 import SubmitEmail from '../../components/SubmitEmail'
 import DestinationImage from '../../blocks/DestinationImage';
-import locations from '../../promises/Locations'
+import locations from '../../promises/LocationList'
 import Lottie from 'react-lottie'
 import * as animationData from '../../assets/animation/compass.json';
 import * as animationDataB from '../../assets/animation/direction-arrows.json';

@@ -1,4 +1,4 @@
-import { NEW_LOCATION_URL }  from '../constants'
+import { LOCATION_URL }  from '../constants'
 
 async function newLocation(name){
 
@@ -6,7 +6,7 @@ async function newLocation(name){
       formData.append('name', name)
 
       try {
-        const res = await fetch(NEW_LOCATION_URL, {
+        const res = await fetch(LOCATION_URL, {
             method: 'POST',
             body : formData,
         })

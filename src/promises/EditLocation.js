@@ -1,6 +1,6 @@
 import { EDIT_LOCATION_URL }  from '../constants'
 
-async function editLocation(name, id){
+async function editLocation(id, name){
 
       var formData = new FormData()
       formData.append('name', name)

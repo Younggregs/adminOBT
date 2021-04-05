@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -7,8 +7,14 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import Paper from '@material-ui/core/Paper';
+import { ReactComponent as Pen } from '../assets/svg/Pen.svg';
 import { ReactComponent as Bin } from '../assets/svg/Bin.svg';
-import deleteMiss from '../promises/DeleteMiss'
+import TextField from '@material-ui/core/TextField'
+import editLocation from '../promises/EditLocation'
+import deleteLocation from '../promises/DeleteLocation'
 
 
 function Alert(props) {
@@ -19,55 +25,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  box: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 20,
-    padding: 5
-  },
-  dpContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '40vh',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  dp: {
-    height: 150,
-    width: 200,
-    margin: 10,
-    backgroundColor: 'whitesmoke',
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundPosition: 'center',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat'
-  },
-  dp2: {
-    height: 150,
-    width: 200,
-    margin: 10,
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundPosition: 'center',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat'
-  },
-  uploadView: {
-    direction: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    padding: 5,
-    backgroundColor: '#000',
-    borderRadius: 10
-  },
   linksView: {
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     display: 'flex',
+    lineHeight: 0.5,
     flexDirection: 'column',
   },
   links: {
@@ -75,19 +38,18 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     minHeight: 50,
     width: 300,
+    lineHeight: 0.5,
     borderRadius: 5,
-    border: '1px solid gray',
     margin: 10,
     padding: 5,
     flexDirection: 'row',
     display: 'flex'
   },
   linkText: {
-    flex: 8,
     padding: 5, 
     fontSize: 15,
     fontWeight: 'bold',
-    color:  '#595ecd',
+    color:  'green',
   },
   iconButton: {
     height: 35,
@@ -145,16 +107,34 @@ const useStyles = makeStyles((theme) => ({
   linkStyle: {
       padding: 5,
       fontSize: 12,
-  }
+  },
+  name: {
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    padding: 5, 
+    fontSize: 20,
+    color:  '#000',
+  },
+  text: {
+    fontWeight: 'normal',
+    padding: 5, 
+    fontSize: 15,
+    color:  '#000',
+  },
 }));
 
-export default function LocationItem(props) {
+export default function UserItem(props) {
   const classes = useStyles();
 
-  const [openalert, setOpenalert] = useState(false);
-  const [opendelete, setOpendelete] = useState(false);
-  const [alertmsg, setAlertmsg] = useState();
-  const [deleted, setDeleted] = useState(false);
+  const [location, setLocation] = React.useState(props.item.name);
+  const [openalert, setOpenalert] = React.useState(false);
+  const [openedit, setOpenedit] = React.useState(false);
+  const [opendelete, setOpendelete] = React.useState(false);
+  const [alertmsg, setAlertmsg] = React.useState();
+  const [deleted, setDeleted] = React.useState(false);
+  const [edited, setEdited] = React.useState(false);
+  const [brick, setBrick] = React.useState({});
+
 
   const handleCloseAlert = (event, reason) => {
     if (reason === 'clickaway') {
@@ -163,6 +143,20 @@ export default function LocationItem(props) {
 
     setOpenalert(false);
   };
+
+
+  const handleClickOpenEdit = () => {
+    setOpenedit(true);
+  };
+
+  const handleCloseEdit = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenedit(false);
+  };
+
 
   const handleClickOpenDelete = () => {
     setOpendelete(true);
@@ -176,42 +170,192 @@ export default function LocationItem(props) {
     setOpendelete(false);
   };
 
+  const handleChangeLocation = (event) => {
+    setLocation(event.target.value);
+  };
 
-const handleDelete = async () => {
+
+const handleEdit = async (id) => {
+
+  setOpenedit(false)
+  setOpenalert(true)
+  setAlertmsg('Submitting Location')
+
+  const message = await editLocation(id, location)
+  setOpenalert(true)
+  if(message.error_message){
+    setAlertmsg(message.error_message)
+  }else{
+    setEdited(true);
+    setBrick(message);
+    setAlertmsg('Location edited succesfully')
+    //setLink(message)
+  }
+        
+}
+
+const handleDelete = async (id) => {
 
   setOpendelete(false)
   setOpenalert(true)
-  setAlertmsg('Deleting Missed Location Guide')
+  setAlertmsg('Deleting Location')
 
-  const message = await deleteMiss(props.item.id)
+  const message = await deleteLocation(id)
 
   setOpenalert(true)
   if(message.error_message){
     setAlertmsg(message.error_message)
   }else{
     setDeleted(true)
-    setAlertmsg('Missed location guide deleted succesfully')
+    setAlertmsg('Location deleted succesfully')
   }
 
 }
 
 
+
 return (
     <div className={classes.root}>
 
-    <Grid container>
-
-        <Grid className={classes.linksView}>
-        <Grid className={classes.links}>
-            <Grid container direction="column" className={classes.linkText}>
-              <p>LGA: {props.item.name} </p>
-              <p>Users: {props.item.users} </p>
+      <Paper elevation={3} square style={{marginBottom: 10, borderBottom: '10px solid green'}}>
+        {deleted ? (
+            <Grid />
+        ) : (
+        <Grid>
+            {edited ? (
+                <Grid className={classes.linksView}>
+                <Grid className={classes.links}>
+                
+                <Grid className={classes.linkText}>
+                  <p className={classes.name}>{brick.name}</p>
+                </Grid>
+                <Grid className={classes.iconButton}>
+                <Button onClick={handleClickOpenEdit}>
+                    <Pen />
+                </Button>
+                  <Dialog fullWidth={true} maxWidth={'sm'} open={openedit} onClose={handleCloseEdit} aria-labelledby="form-dialog-edit">
+                      <DialogTitle id="form-dialog-title">Edit Location</DialogTitle>
+                      <DialogContent>
+                      <DialogContentText>
+                          It's all about the network.
+                      </DialogContentText>
+    
+                      <Grid className={classes.formField}>  
+                          <TextField 
+                            autoFocus 
+                            id="name" 
+                            label="Report Location"
+                            defaultValue={brick.name} 
+                            onChange={handleChangeLocation} 
+                            required 
+                            fullWidth/>
+                      </Grid>
+    
+                      </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseEdit} color="primary">
+                          Cancel
+                      </Button>
+                      <Button onClick={() => handleEdit(brick.id)} color="primary">
+                          Submit
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </Grid>
+                <Grid className={classes.iconButton}>
+                <Button onClick={handleClickOpenDelete}>
+                      <Bin />
+                </Button>
+                <Dialog fullWidth={true} maxWidth={'sm'} open={opendelete} onClose={handleCloseDelete} aria-labelledby="form-dialog-delete">
+                    <DialogTitle id="form-dialog-title">
+                      <p>Are you sure you want to delete this Report Location? {brick.name}</p>
+                      <p>All Reports with this Report Location would be deleted</p>
+                      <p>Are you sure you want to proceed?</p>
+                    </DialogTitle>
+                    <DialogActions>
+                      <Button onClick={handleCloseDelete} color="primary">
+                          Cancel
+                      </Button>
+                      <Button onClick={() => handleDelete(brick.id)} color="primary">
+                          Yes
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </Grid>
+              </Grid>
             </Grid>
-            
+
+            ): (
+
+            <Grid className={classes.linksView}>
+            <Grid className={classes.links}>
+            <Grid container direction="column">
+                <p className={classes.name}>{props.item.name}</p>
+            </Grid>
+            <Grid className={classes.iconButton}>
+            <Button onClick={handleClickOpenEdit}>
+                  <Pen />
+            </Button>
+              <Dialog fullWidth={true} maxWidth={'sm'} open={openedit} onClose={handleCloseEdit} aria-labelledby="form-dialog-edit">
+                  <DialogTitle id="form-dialog-title">Edit Location</DialogTitle>
+                  <DialogContent>
+                  <DialogContentText>
+                      It's all about the network.
+                  </DialogContentText>
+
+                  <Grid className={classes.formField}>  
+                      <TextField 
+                        autoFocus 
+                        id="name" 
+                        label="Report Location"
+                        defaultValue={props.item.name} 
+                        onChange={handleChangeLocation} 
+                        required 
+                        fullWidth/>
+                  </Grid>
+
+                  </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseEdit} color="primary">
+                      Cancel
+                  </Button>
+                  <Button onClick={() => handleEdit(props.item.id)} color="primary">
+                      Submit
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Grid>
+            <Grid className={classes.iconButton}>
+            <Button onClick={handleClickOpenDelete}>
+                  <Bin />
+            </Button>
+            <Dialog fullWidth={true} maxWidth={'sm'} open={opendelete} onClose={handleCloseDelete} aria-labelledby="form-dialog-delete">
+                <DialogTitle id="form-dialog-title">
+                    <p>Are you sure you want to delete this Report Location? {brick.name}</p>
+                    <p>All Reports with this Report Location would be deleted</p>
+                    <p>Are you sure you want to proceed?</p>
+                </DialogTitle>
+                <DialogActions>
+                  <Button onClick={handleCloseDelete} color="primary">
+                      Cancel
+                  </Button>
+                  <Button onClick={() => handleDelete(props.item.id)} color="primary">
+                      Yes
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Grid>
           </Grid>
         </Grid>
 
-    </Grid>
+            )}
+        </Grid>
+
+        )}
+
+        
+
+    </Paper>
 
       <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={openalert} autoHideDuration={3000} onClose={handleCloseAlert}>
         <Alert onClose={handleCloseAlert} severity="success">

@@ -9,14 +9,13 @@ import isSuperUser from '../../promises/IsSuperUser'
 export default function Login() {
     const [loading, setLoading] = useState(false)
     const [password, setPassword] = useState()
-    const [phone, setPhone] = useState('')
-    const [flowershower, setFlowershower] = useState(false)
+    const [email, setEmail] = useState('')
     const [success, setSuccess] = useState(false)
     const [err, setErr] = useState(false)
     const [error, setError] = useState('')
     
 
-    const onPhoneChanged = e => setPhone(e.target.value)
+    const onEmailChanged = e => setEmail(e.target.value)
     const onPasswordChanged = e => setPassword(e.target.value)
 
     const _handleKeyDownSubmit = (e) => {
@@ -32,13 +31,12 @@ export default function Login() {
     const submit = async () => {
 
         setLoading(true)
-        const message = await login(phone, password)
+        const message = await login(email, password)
         if(message.code){
-            setFlowershower(true)
-            const res = await signin(phone, password)
+            const res = await signin(email, password)
             if(res){
                 //set super use status
-                const superUser = await isSuperUser()
+                await isSuperUser()
                 setSuccess(true)
             } 
         }else if(message.error_message){
@@ -56,18 +54,18 @@ export default function Login() {
     return (
         <div className="auth-background">
             <div className="auth-container">
-                <h1>Obuntu</h1><br /><br />
-                <h3>Welcome to Admin Space</h3>
+                <h1>Incident Reporting System</h1><br /><br />
+                <h3>Welcome</h3>
                 <p>Proceed with login</p>
                 <form onSubmit={handleSubmit}>
                     <div className="position-relative">
-                        <span>Phone</span>
+                        <span>Emal</span>
                         <input 
                             autoFocus 
                             type="text" 
-                            name="phone" 
-                            id="phone"
-                            onChange={onPhoneChanged}
+                            name="email" 
+                            id="email"
+                            onChange={onEmailChanged}
                         />
                     </div>
                     <div className="position-relative">
@@ -91,7 +89,7 @@ export default function Login() {
 
             <div>
             {success ? (
-                <Redirect to={'/user'} />
+                <Redirect to={'/report'} />
             ) : (
               <div />
             )}

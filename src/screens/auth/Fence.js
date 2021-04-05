@@ -1,6 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { Redirect } from 'react-router-dom'
-import Admin from '../admin/Admin'
+import React, {useState} from 'react';
+import Report from '../admin/Report'
 import User from '../admin/User'
 import Login from '../auth/Login'
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -15,7 +14,7 @@ function Fence(){
   const evaluate = async () => {
     const auth = await localStorage.getItem('auth')
 
-    if(auth == null || auth == '' || auth == false){setStatus(false)}
+    if(auth === null || auth === '' || auth === false){setStatus(false)}
 
     const superUser = await isSuperUser()
     if(superUser === true){
@@ -40,7 +39,7 @@ function Fence(){
         <div>
            {status ? (
              <div>
-               {iamSuperUser ? ( <Admin /> ): <User />}
+               {iamSuperUser ? ( <User /> ): <Report />}
              </div>
             ) : (
               <Login />

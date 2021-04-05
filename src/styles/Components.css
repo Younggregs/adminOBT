@@ -6,12 +6,12 @@
 }
 
 body {
-    background: #FFFFF9;
+    background: 'rgb(224, 245, 228)';
     font-family: 'Gilroy', sans-serif;
 }
 
 .main-button {
-    background: #7D83FF;
+    background: green;
     border-radius: 5px;
     font-weight: normal;
     font-size: 20px;

@@ -174,7 +174,7 @@ p {
 
 .nav .link-inner .inner-header ul {
   display: flex;
-  background: #121E23;
+  background: #19461A;
   justify-content: space-between;
   align-items: center;
   width: 100%;
@@ -241,7 +241,7 @@ nav .link-inner .inner-header ul .col-md-3 {
 
 @media only screen and (max-width: 991px) {
 
-  .navbbar {
+  .navbar {
     padding: 0.5rem 18px;
   }
 
@@ -347,7 +347,7 @@ nav .link-inner .inner-header ul .col-md-3 {
 }
 
 .nav .dash-inner a:hover {
-  color: #7D83FF;
+  color: #7dff99;
   transition: .3s ease-in-out;
   text-decoration: none !important;
 }
